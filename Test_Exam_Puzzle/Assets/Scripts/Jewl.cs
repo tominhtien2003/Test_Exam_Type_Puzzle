@@ -8,13 +8,19 @@ public class Jewl : MonoBehaviour
     private bool isDragging;
     private SpriteRenderer sprite;
     private Vector2[] direcs = new Vector2[4];
+    private GameObject obj;
     private void Awake()
     {
         sprite = GetComponentInChildren<SpriteRenderer>();
+        
         direcs[0] = Vector2.down;
         direcs[1] = Vector2.up;
         direcs[2] = Vector2.left;
         direcs[3] = Vector2.right;
+    }
+    private void Start()
+    {
+        obj = GameObject.Find("Star");
     }
     public void SetPos(Vector3 newPos)
     {
@@ -69,7 +75,7 @@ public class Jewl : MonoBehaviour
         if (!CheckLimit(transform)) return;
         foreach (Vector2 dir in direcs)
         {
-            RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, dir, 2f, masks);
+            RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, dir, 1f, masks);
             foreach (var hit_ in hit)
             {
                 if (hit_.collider.gameObject != gameObject)
@@ -82,18 +88,21 @@ public class Jewl : MonoBehaviour
             }
         }
     }
-    private IEnumerator TimeDestroyJewl(GameObject _gameobject)
+    private IEnumerator TimeDestroyJewl(GameObject jewlObj)
     {
-        GameObject obj = GameObject.Find("Star");
-        obj.transform.position = Vector3.Lerp(transform.position, _gameobject.transform.position, .5f);
+        obj.transform.position = Vector3.Lerp(transform.position, jewlObj.transform.position, .5f);
+        obj.SetActive(true);
         yield return new WaitForSeconds(.25f);
         obj.GetComponent<Animator>().SetTrigger("Rotate");
         yield return new WaitForSeconds(.25f);
         obj.GetComponent<Animator>().SetTrigger("Blink");
         yield return new WaitForSeconds(.1f);
-        obj.GetComponent<Star>().SetPos();
-        Destroy(_gameobject);
+        obj.transform.position = new Vector3(-20f, 0f, 0f);
+        //obj.GetComponent<Star>().SetPos();
+        Destroy(jewlObj);
         Destroy(gameObject);
+        Grid.checkPos[(int)transform.position.x, (int)transform.position.y] = 0;
+        Grid.checkPos[(int)jewlObj.transform.position.x, (int)jewlObj.transform.position.y] = 0;
     }
     private void OnMouseDown()
     {

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Jewl
+  - Star
   layers:
   - Default
   - TransparentFX

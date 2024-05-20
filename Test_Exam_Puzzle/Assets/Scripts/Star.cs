@@ -3,7 +3,7 @@ using UnityEngine;
 public class Star : MonoBehaviour
 {
     private Vector3 startPos;
-    private void Awake()
+    private void Start()
     {
         startPos = transform.position;
     }
